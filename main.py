@@ -19,7 +19,7 @@ async def on_message(message):
     if message.guild is None:
         return
 
-    if message.channel.id == 1114507625195909200:
+    if message.channel.id == 769733434834157588:
         if message.embeds:
             embed = message.embeds[0]
             if embed.title and 'JLPT N4 Reading Quiz Ended' in embed.title:
