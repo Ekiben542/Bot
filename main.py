@@ -27,10 +27,10 @@ async def on_message(message):
                     if field.name.startswith('Unanswered Questions'):
                         unanswered_questions = eval(field.name.split(' ')[-1])
                         if unanswered_questions is None or unanswered_questions <= 3:
-                            await give_reward_role_to_last_sent_msg_of_user(message.channel, 'Test')
+                            await give_reward_role_to_last_sent_msg_of_user(message.channel, 'JLPT N4')
                         return
                     elif field.name == 'Final Scores':
-                        await give_reward_role_to_last_sent_msg_of_user(message.channel, 'Test')
+                        await give_reward_role_to_last_sent_msg_of_user(message.channel, 'JLPT N4')
                         return
 
 TOKEN = os.getenv("DISCORD_TOKEN")
