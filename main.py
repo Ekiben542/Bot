@@ -1,10 +1,9 @@
-import discord
-from discord.ext import commands
-import os
-from keep_alive import keep_alive
+from quart import Quart
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
+
+app = Quart(__name__)
 
 async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
     role = discord.utils.get(channel.guild.roles, name=role_name)
@@ -34,6 +33,13 @@ async def on_message(message):
                             await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
                             return
 
+@app.route('/')
+async def home():
+    return "I'm alive"
+
 TOKEN = os.getenv("DISCORD_TOKEN")
-keep_alive()
+PORT = os.environ.get('PORT')
+
+bot.loop.create_task(app.run_task('0.0.0.0', PORT))
+
 bot.run(TOKEN)
