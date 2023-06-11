@@ -1,2 +1,2 @@
 discord.py==2.2.3
-Flask==2.2.3
+quart==0.18.4
