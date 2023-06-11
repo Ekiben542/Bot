@@ -1,3 +1,6 @@
+import discord
+from discord.ext import commands
+import os
 from quart import Quart
 
 intents = discord.Intents.all()
