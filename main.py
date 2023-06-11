@@ -43,6 +43,8 @@ async def home():
 TOKEN = os.getenv("DISCORD_TOKEN")
 PORT = os.environ.get('PORT')
 
-bot.loop.create_task(app.run_task('0.0.0.0', PORT))
+@bot.event
+async def on_ready():
+    bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
