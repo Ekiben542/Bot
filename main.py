@@ -22,16 +22,17 @@ async def on_message(message):
     if message.channel.id == 1117024608651063377:
         if message.embeds:
             embed = message.embeds[0]
-            if embed.title and 'JLPT N4 Reading Quiz Ended' in embed.title:
-                for field in embed.fields[::-1]:
-                    if field.name.startswith('Unanswered Questions'):
-                        unanswered_questions = eval(field.name.split(' ')[-1])
-                        if unanswered_questions is None or unanswered_questions <= 3:
-                            await give_reward_role_to_last_sent_msg_of_user(message.channel, 'JLPT N4')
-                        return
-                    elif field.name == 'Final Scores':
-                        await give_reward_role_to_last_sent_msg_of_user(message.channel, 'JLPT N4')
-                        return
+            for n in range(1, 6):
+                if embed.title and f'JLPT N{n} Reading Quiz Ended' in embed.title:
+                    for field in embed.fields[::-1]:
+                        if field.name.startswith('Unanswered Questions'):
+                            unanswered_questions = eval(field.name.split(' ')[-1])
+                            if unanswered_questions is None or unanswered_questions <= 3:
+                                await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
+                            return
+                        elif field.name == 'Final Scores':
+                            await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
+                            return
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 keep_alive()
