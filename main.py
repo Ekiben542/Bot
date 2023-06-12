@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext
 import os
 from quart import Quart
 
@@ -48,16 +47,5 @@ PORT = os.environ.get('PORT')
 @bot.event
 async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
-
-@slash.slash(name="role", description="Displays the list of users with JLPT roles")
-async def role(ctx: SlashContext):
-    embed = discord.Embed(title="JLPT Role List", color=discord.Color.blue())
-    for n in range(1, 6):
-        role_name = f'JLPT N{n}'
-        role = discord.utils.get(ctx.guild.roles, name=role_name)
-        members = [member.display_name for member in role.members]
-        members_str = ', '.join(members) if members else 'None'
-        embed.add_field(name=role_name, value=members_str)
-    await ctx.send(embed=embed)
 
 bot.run(TOKEN)
