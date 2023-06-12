@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands
+from discord_slash import SlashCommand, SlashContext
 import os
 from quart import Quart
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
+slash = SlashCommand(bot, sync_commands=True)
 
 app = Quart(__name__)
 
@@ -47,8 +49,8 @@ PORT = os.environ.get('PORT')
 async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
-@bot.command()
-async def role(ctx):
+@slash.slash(name="role", description="Displays the list of users with JLPT roles")
+async def role(ctx: SlashContext):
     embed = discord.Embed(title="JLPT Role List", color=discord.Color.blue())
     for n in range(1, 6):
         role_name = f'JLPT N{n}'
