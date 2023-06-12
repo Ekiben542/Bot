@@ -5,7 +5,6 @@ from quart import Quart
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
-slash = SlashCommand(bot, sync_commands=True)
 
 app = Quart(__name__)
 
