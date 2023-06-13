@@ -36,6 +36,16 @@ async def on_message(message):
                             await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
                             return
 
+
+@bot.command(name='test')
+async def test(ctx):
+    embed = discord.Embed(title="JLPT N1~5ロールが付いている人の一覧")
+    for n in range(1, 6):
+        role = discord.utils.get(ctx.guild.roles, name=f'JLPT N{n}')
+        members = [member.display_name for member in role.members]
+        embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
+    await ctx.send(embed=embed)
+
 @app.route('/')
 async def home():
     return "I'm alive"
@@ -48,3 +58,4 @@ async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
+
