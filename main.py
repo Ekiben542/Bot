@@ -36,11 +36,7 @@ async def on_message(message):
                             await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
                             return
     await bot.process_commands(message)
-@app.route('/')
-async def home():
-    return "I'm alive"
-TOKEN = os.getenv("DISCORD_TOKEN")
-PORT = os.environ.get('PORT')
+
 
 @bot.command(name='test')
 async def test(ctx):
@@ -49,7 +45,20 @@ async def test(ctx):
         role = discord.utils.get(ctx.guild.roles, name=f'JLPT N{n}')
         members = [member.display_name for member in role.members]
         embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
+    await ctx.send(embed=embed)
 
+
+@app.route('/')
+async def home():
+    return "I'm alive"
+
+
+TOKEN = os.getenv("DISCORD_TOKEN")
+PORT = os.environ.get('PORT')
+
+
+@bot.event
+async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 
