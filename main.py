@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import os
+import datetime
+import pytz
 from quart import Quart
 
 intents = discord.Intents.all()
@@ -56,6 +58,12 @@ PORT = os.environ.get('PORT')
 
 @bot.event
 async def on_ready():
+    us_time = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime('%H:%M')
+    eu_time = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M')
+    jp_time = datetime.datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%H:%M')
+    status = f"US Time: {us_time} / Europe Time: {eu_time} / Japan Time: {jp_time}"
+    await bot.change_presence(activity=discord.Game(name=status))
+
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
