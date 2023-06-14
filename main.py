@@ -21,7 +21,7 @@ async def on_message(message):
     if message.guild is None:
         return
 
-    if message.channel.id == 1117024608651063377:
+    if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499:
         if message.embeds:
             embed = message.embeds[0]
             for n in range(1, 6):
@@ -59,4 +59,3 @@ async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
-
