@@ -1,19 +1,20 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import os
-import datetime
-import pytz
+from quart import Quart
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
+app = Quart(__name__)
+
 
 async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
     role = discord.utils.get(channel.guild.roles, name=role_name)
-
     async for msg in channel.history(limit=10):
         if not msg.embeds:
             await msg.author.add_roles(role)
             return
+
 
 @bot.event
 async def on_message(message):
@@ -44,28 +45,8 @@ async def test(ctx):
         role = discord.utils.get(ctx.guild.roles, name=f'JLPT N{n}')
         members = [member.display_name for member in role.members]
         embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
-    await ctx.send(embed=embed)
 
-TOKEN = os.getenv("DISCORD_TOKEN")
+    bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
-@tasks.loop(minutes=1)  # Update every 1 minute, you can adjust the interval as needed
-async def update_time():
-    us_time = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime('%H:%M')
-    eu_time = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M')
-    jp_time = datetime.datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%H:%M')
-    status = f"US Time: {us_time} / Europe Time: {eu_time} / Japan Time: {jp_time}"
-    await bot.change_presence(activity=discord.Game(name=status))
-
-@update_time.before_loop
-async def before_update_time():
-    await bot.wait_until_ready()
-
-@update_time.after_loop
-async def after_update_time():
-    if update_time.is_being_cancelled():
-        print("The time update task has been cancelled.")
-
-update_time.start()
 
 bot.run(TOKEN)
-
