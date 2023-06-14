@@ -9,6 +9,8 @@ app = Quart(__name__)
 
 
 async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
+    if channel.last_message.content.startswith('k!quiz n') and channel.last_message.content[8] in '12345' and channel.last_message.content[10] in '123456789':
+        return
     role = discord.utils.get(channel.guild.roles, name=role_name)
     async for msg in channel.history(limit=10):
         if not msg.embeds:
