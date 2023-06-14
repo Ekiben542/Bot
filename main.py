@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import os
 import datetime
 import pytz
@@ -56,14 +56,27 @@ async def home():
 TOKEN = os.getenv("DISCORD_TOKEN")
 PORT = os.environ.get('PORT')
 
-@bot.event
-async def on_ready():
-    us_time = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime('%H:%M')
-    eu_time = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M')
-    jp_time = datetime.datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%H:%M')
-    status = f"US Time: {us_time} / Europe Time: {eu_time} / Japan Time: {jp_time}"
-    await bot.change_presence(activity=discord.Game(name=status))
+@tasks.loop(minutes=1)  # Update every 1 minute, you can adjust the interval as needed
+async def update_time():
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        us_time = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime('%H:%M')
+        eu_time = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M')
+        jp_time = datetime.datetime.now(pytz.timezone('Asia/Tokyo')).strftime('%H:%M')
+        status = f"US Time: {us_time} / Europe Time: {eu_time} / Japan Time: {jp_time}"
+        await bot.change_presence(activity=discord.Game(name=status))
+        await asyncio.sleep(60)  # Wait for 60 seconds before updating the time again
 
-    bot.loop.create_task(app.run_task('0.0.0.0', PORT))
+@update_time.before_loop
+async def before_update_time():
+    await bot.wait_until_ready()
 
+@update_time.after_loop
+async def after_update_time():
+    if update_time.is_being_cancelled():
+        print("だめです")
+
+update_time.start()
+
+bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 bot.run(TOKEN)
