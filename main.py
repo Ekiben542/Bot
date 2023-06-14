@@ -36,7 +36,11 @@ async def on_message(message):
                             await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
                             return
     await bot.process_commands(message)
-
+@app.route('/')
+async def home():
+    return "I'm alive"
+TOKEN = os.getenv("DISCORD_TOKEN")
+PORT = os.environ.get('PORT')
 
 @bot.command(name='test')
 async def test(ctx):
