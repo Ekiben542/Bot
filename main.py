@@ -8,13 +8,19 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 app = Quart(__name__)
 
 async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
-    if channel.last_message.content.startswith('k!quiz n') and channel.last_message.content[8] in '12345' and channel.last_message.content[10] in '123456789':
-        return
+    last_message = channel.last_message
+    if last_message.content.startswith('k!quiz n') and last_message.content[8] in '12345' and last_message.content[10] in '123456789':
+        # split the message content by spaces to get the individual arguments
+        args = last_message.content.split()
+        # check if the third argument (the number of questions) is "1"
+        if len(args) > 2 and args[2] == "1":
+            return
     role = discord.utils.get(channel.guild.roles, name=role_name)
     async for msg in channel.history(limit=10):
         if not msg.embeds:
             await msg.author.add_roles(role)
             return
+
 
 @bot.event
 async def on_message(message):
@@ -58,4 +64,5 @@ async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
+
 
