@@ -14,8 +14,7 @@ N4Botとは、「みんなの教室」サーバー専属のBotのことである
 問題があった場合は**Issue**か**Discord**で連絡お願いします。
 
 ## 処理（開発者向け）
-```py
-from flask import Flask
+~~from flask import Flask
 from threading import Thread
 
 app = Flask('')
@@ -29,9 +28,9 @@ def run():
 
 def keep_alive():
     t = Thread(target=run)
-    t.start()
-``` 
-このコードを使ってサーバーを常時動かしています.（Flaskであーだこーだーする）
+    t.start()~~
+
+~~このコードを使ってサーバーを常時動かしています.（Flaskであーだこーだーする）~~ Quartに変えました.
 
 
 処理の方はmain.pyにあるので、壊さない限りはいじっても大丈夫です.
