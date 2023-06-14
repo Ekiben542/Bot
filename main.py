@@ -7,7 +7,6 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
 app = Quart(__name__)
 
-
 async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
     if channel.last_message.content.startswith('k!quiz n') and channel.last_message.content[8] in '12345' and channel.last_message.content[10] in '123456789':
         return
@@ -16,7 +15,6 @@ async def give_reward_role_to_last_sent_msg_of_user(channel, role_name):
         if not msg.embeds:
             await msg.author.add_roles(role)
             return
-
 
 @bot.event
 async def on_message(message):
@@ -39,7 +37,6 @@ async def on_message(message):
                             return
     await bot.process_commands(message)
 
-
 @bot.command(name='test')
 async def test(ctx):
     embed = discord.Embed(title="JLPT N1~5ロールが付いている人の一覧")
@@ -49,19 +46,15 @@ async def test(ctx):
         embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
     await ctx.send(embed=embed)
 
-
 @app.route('/')
 async def home():
     return "I'm alive"
 
-
 TOKEN = os.getenv("DISCORD_TOKEN")
 PORT = os.environ.get('PORT')
-
 
 @bot.event
 async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
-
 
 bot.run(TOKEN)
