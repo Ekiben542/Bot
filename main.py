@@ -28,7 +28,7 @@ async def on_message(message):
         return
 
     if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499 or message.channel.id == 1124293569260310621:
-:
+
         if message.embeds:
             embed = message.embeds[0]
             for n in range(1, 6):
