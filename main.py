@@ -28,7 +28,7 @@ async def on_message(message):
         return
 
     if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499 or message.channel.id == 1124293569260310621:
-
+        or_flag = True
         if message.embeds:
             embed = message.embeds[0]
             for n in range(1, 6):
@@ -47,8 +47,12 @@ async def on_message(message):
                         if field.name == 'Score limit':
                             score_limit = int(field.value)
                             if score_limit <= 10:
-                                return
-    await bot.process_commands(message)
+                                or_flag = False
+                            else:
+                                or_flag = True
+                            break
+    if or_flag:
+        await bot.process_commands(message)
 
 @bot.command(name='test')
 async def test(ctx):
@@ -71,5 +75,4 @@ async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
-
 
