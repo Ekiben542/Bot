@@ -31,6 +31,15 @@ async def on_message(message):
         or_flag = True
         if message.embeds:
             embed = message.embeds[0]
+            if embed.title and 'Quiz Starting in 5 seconds' in embed.title:
+                for field in embed.fields:
+                    if field.name == 'Score limit':
+                        score_limit = int(field.value)
+                        if score_limit <= 10:
+                            or_flag = False
+                        else:
+                            or_flag = True
+                        break
             for n in range(1, 6):
                 if embed.title and f'JLPT N{n} Reading Quiz Ended' in embed.title:
                     for field in embed.fields[::-1]:
@@ -42,15 +51,6 @@ async def on_message(message):
                         elif field.name == 'Final Scores':
                             await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}')
                             return
-                elif embed.title and 'Quiz Starting in 5 seconds' in embed.title:
-                    for field in embed.fields:
-                        if field.name == 'Score limit':
-                            score_limit = int(field.value)
-                            if score_limit <= 10:
-                                or_flag = False
-                            else:
-                                or_flag = True
-                            break
     if or_flag:
         await bot.process_commands(message)
 
@@ -75,4 +75,3 @@ async def on_ready():
     bot.loop.create_task(app.run_task('0.0.0.0', PORT))
 
 bot.run(TOKEN)
-
