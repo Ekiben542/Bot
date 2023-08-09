@@ -61,6 +61,13 @@ async def test(ctx):
         embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
     await ctx.send(embed=embed)
 
+@bot.command()
+async def ping(ctx):
+    latency = bot.latency * 1000  # Convert to milliseconds
+    await ctx.send(f'Pong!! 現在のPing値は{latency:.2f}msです.')
+
+
+
 @app.route('/')
 async def home():
     return "I'm alive"
