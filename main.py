@@ -21,51 +21,6 @@ async def give_reward_role_to_last_sent_msg_of_user(channel, role_name, or_var):
             if not msg.embeds:
                 await msg.author.add_roles(role)
                 return
-
-
-@bot.event
-async def on_message(message):
-    if message.guild is None:
-        return
-
-    if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499 or message.channel.id == 1124293569260310621:
-
-        if message.embeds:
-            embed = message.embeds[0]
-            or_var = True
-            if embed.title and 'Quiz Starting in 5 seconds' in embed.title:
-                for field in embed.fields:
-                    if field.name == 'Score limit' and field.value in '123456789':
-                        or_var = False
-                        break
-            for n in range(1, 6):
-                if embed.title and f'JLPT N{n} Reading Quiz Ended' in embed.title:
-                    for field in embed.fields[::-1]:
-                        if field.name.startswith('Unanswered Questions'):
-                            unanswered_questions = eval(field.name.split(' ')[-1])
-                            if unanswered_questions is None or unanswered_questions <= 3:
-                                await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}', or_var)
-                            return
-                        elif field.name == 'Final Scores':
-                            await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}', or_var)
-                            return
-      
-    await bot.process_commands(message)
-
-@bot.command(name='test')
-async def test(ctx):
-    embed = discord.Embed(title="JLPT N1~5ロールが付いている人の一覧")
-    for n in range(1, 6):
-        role = discord.utils.get(ctx.guild.roles, name=f'JLPT N{n}')
-        members = [member.display_name for member in role.members]
-        embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
-    await ctx.send(embed=embed)
-
-@bot.command()
-async def ping(ctx):
-    latency = bot.latency * 1000  # Convert to milliseconds
-    await ctx.send(f'Pong!! 現在のPing値は{latency:.2f}msです.')
-
 fun_facts = [
     "Japan is known as the Land of the Rising Sun.",
     "Japan has the third longest life expectancy in the world.",
@@ -138,11 +93,57 @@ fun_facts = [
     "Many Japanese babies are born with a Mongolian spot (mokohan) on their backs. This harmless birthmark usually fades by the age of 5. It is common in several Asian populations and in Native Americans.",
     "Today, fewer than 200 people in Japan can claim both parents with exclusively Ainu, perhaps the original human inhabitants of Japan, descent. The Ainu do not possess the Y chromosome typically found in the rest of the Japanese population.",
 ]
+
+@bot.event
+async def on_message(message):
+    if message.guild is None:
+        return
+
+    if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499 or message.channel.id == 1124293569260310621:
+
+        if message.embeds:
+            embed = message.embeds[0]
+            or_var = True
+            if embed.title and 'Quiz Starting in 5 seconds' in embed.title:
+                for field in embed.fields:
+                    if field.name == 'Score limit' and field.value in '123456789':
+                        or_var = False
+                        break
+            for n in range(1, 6):
+                if embed.title and f'JLPT N{n} Reading Quiz Ended' in embed.title:
+                    for field in embed.fields[::-1]:
+                        if field.name.startswith('Unanswered Questions'):
+                            unanswered_questions = eval(field.name.split(' ')[-1])
+                            if unanswered_questions is None or unanswered_questions <= 3:
+                                await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}', or_var)
+                            return
+                        elif field.name == 'Final Scores':
+                            await give_reward_role_to_last_sent_msg_of_user(message.channel, f'JLPT N{n}', or_var)
+                            return
+      
+    await bot.process_commands(message)
+
+@bot.command(name='test')
+async def test(ctx):
+    embed = discord.Embed(title="JLPT N1~5ロールが付いている人の一覧")
+    for n in range(1, 6):
+        role = discord.utils.get(ctx.guild.roles, name=f'JLPT N{n}')
+        members = [member.display_name for member in role.members]
+        embed.add_field(name=f'JLPT N{n}', value='\n'.join(members), inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def ping(ctx):
+    latency = bot.latency * 1000  # Convert to milliseconds
+    await ctx.send(f'Pong!! 現在のPing値は{latency:.2f}msです.')
+
+
 @bot.command()
 async def mamechisiki(ctx):
-    # ランダムな豆知識を選択
     random_fact = random.choice(fun_facts)
     await ctx.send(random_fact)
+
+
 @app.route('/')
 async def home():
     return "I'm alive"
