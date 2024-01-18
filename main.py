@@ -8,20 +8,6 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
 app = Quart(__name__)
 
-async def give_reward_role_to_last_sent_msg_of_user(channel, role_name, or_var):
-    if or_var:
-        last_message = channel.last_message
-        if last_message.content.startswith('k!quiz n') and last_message.content[8] in '12345' and last_message.content[10] in '123456789':
-            # split the message content by spaces to get the individual arguments
-            args = last_message.content.split()
-            # check if the third argument (the number of questions) is "1"
-            if len(args) > 2 and args[2] == "1":
-                return
-        role = discord.utils.get(channel.guild.roles, name=role_name)
-        async for msg in channel.history(limit=10):
-            if not msg.embeds:
-                await msg.author.add_roles(role)
-                return
 fun_facts = [
     "Japan is known as the Land of the Rising Sun.",
     "Japan has the third longest life expectancy in the world.",
@@ -100,6 +86,11 @@ async def on_message(message):
     if message.guild is None:
         return
 
+    if message.content.startswith('k!quiz n'):
+        _, level, score = message.content.split()
+        if int(level[1]) in range(1, 6) and int(score) in range(1, 5):
+            return
+
     if message.channel.id == 1117024608651063377 or message.channel.id == 1118401512478097499 or message.channel.id == 1124293569260310621:
 
         if message.embeds:
@@ -135,15 +126,13 @@ async def test(ctx):
 
 @bot.command()
 async def ping(ctx):
-    latency = bot.latency * 1000  # Convert to milliseconds
+    latency = bot.latency * 1000
     await ctx.send(f'Pong!! 現在のPing値は{latency:.2f}msです.')
-
 
 @bot.command()
 async def mamechisiki(ctx):
     random_fact = random.choice(fun_facts)
     await ctx.send(random_fact)
-
 
 @app.route('/')
 async def home():
